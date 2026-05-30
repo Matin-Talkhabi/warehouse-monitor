@@ -50,16 +50,16 @@ def get_env_str(key, default=''):
     return value
 
 # Use safe parsing for all values
-WAREHOUSE_ID = get_env_int('WAREHOUSE_ID', '50')
-CHECK_INTERVAL = get_env_int('CHECK_INTERVAL', '30')
-ALERT_COOLDOWN = get_env_int('ALERT_COOLDOWN', '300')
+WAREHOUSE_ID = get_env_int('WAREHOUSE_ID', 72)
+CHECK_INTERVAL = get_env_int('CHECK_INTERVAL', 30)
+ALERT_COOLDOWN = get_env_int('ALERT_COOLDOWN', 300)
 
 # SMS Config - ALL from environment
-SMS_PATTERN_CODE = get_env_str('SMS_PATTERN_CODE', '')
+SMS_PATTERN_CODE = get_env_str('SMS_PATTERN_CODE', 'kondvd1hhs5h3ld')
 SMS_SENDER = get_env_str('SMS_SENDER', '3000505')
 SMS_RECIPIENT = get_env_str('SMS_RECIPIENT', '')
 SMS_API_KEY = get_env_str('SMS_API_KEY', '')
-SMS_COOKIE = get_env_str('SMS_COOKIE', '')
+SMS_COOKIE = get_env_str('SMS_COOKIE', 'TS0177e476=0150a3e24e04874134dfd1bd5c65872f68c46a920efd859609d593ca9d48072507268ec821466d8aa3136e08191fcd1c9bfcc5abdd')
 
 # Check if critical secrets are available
 if not os.getenv('SELLER_API_ACCESS_TOKEN'):
