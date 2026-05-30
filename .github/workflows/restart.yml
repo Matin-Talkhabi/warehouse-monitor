@@ -1,0 +1,22 @@
+name: Auto Restart Monitor
+
+on:
+  schedule:
+    # هر 5 ساعت یکبار اجرا شود (برای ریستارت)
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
+
+jobs:
+  restart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger monitor workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'monitor.yml',
+              ref: 'main'
+            })
