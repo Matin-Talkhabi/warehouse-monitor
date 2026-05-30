@@ -1,14 +1,14 @@
-name: Warehouse Capacity Monitor - Continuous
+name: Warehouse Capacity Monitor
 
 on:
-  workflow_dispatch:  # فقط اجرای دستی (خودکار شروع نمی‌شه)
+  workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *'  # هر 5 ساعت یکبار ریستارت میشه (اختیاری)
+    - cron: '*/5 * * * *'
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 350  # تقریباً 5.8 ساعت (کمی کمتر از حد مجاز 6 ساعت)
+    timeout-minutes: 350  # ~6 hours
     
     steps:
     - name: Checkout code
@@ -20,9 +20,11 @@ jobs:
         python-version: '3.10'
         
     - name: Install dependencies
-      run: pip install requests pytz
-      
-    - name: Run continuous monitor
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Run monitor
       env:
         WAREHOUSE_ID: ${{ vars.WAREHOUSE_ID }}
         SELLER_API_ACCESS_TOKEN: ${{ secrets.SELLER_API_ACCESS_TOKEN }}
@@ -34,6 +36,5 @@ jobs:
         COUNTS: ${{ secrets.COUNTS }}
         SMS_API_KEY: ${{ secrets.SMS_API_KEY }}
         SMS_RECIPIENT: ${{ secrets.SMS_RECIPIENT }}
-        CHECK_INTERVAL: ${{ vars.CHECK_INTERVAL }}
       run: |
         python -u monitor.py
