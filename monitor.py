@@ -42,15 +42,29 @@ def get_env_int(key, default):
         print(f"⚠️ Warning: {key} value '{value}' is invalid, using default {default}")
         return default
 
-# Use safe parsing for all integer values
+def get_env_str(key, default=''):
+    """Safely get string from environment variable"""
+    value = os.getenv(key)
+    if value is None or value == '':
+        return default
+    return value
+
+# Use safe parsing for all values
 WAREHOUSE_ID = get_env_int('WAREHOUSE_ID', 72)
 CHECK_INTERVAL = get_env_int('CHECK_INTERVAL', 30)
 ALERT_COOLDOWN = get_env_int('ALERT_COOLDOWN', 300)
 
+# SMS Config - ALL from environment
+SMS_PATTERN_CODE = get_env_str('SMS_PATTERN_CODE', 'kondvd1hhs5h3ld')
+SMS_SENDER = get_env_str('SMS_SENDER', '3000505')
+SMS_RECIPIENT = get_env_str('SMS_RECIPIENT', '')
+SMS_API_KEY = get_env_str('SMS_API_KEY', '')
+SMS_COOKIE = get_env_str('SMS_COOKIE', 'TS0177e476=0150a3e24e04874134dfd1bd5c65872f68c46a920efd859609d593ca9d48072507268ec821466d8aa3136e08191fcd1c9bfcc5abdd')
+
 # Check if critical secrets are available
 if not os.getenv('SELLER_API_ACCESS_TOKEN'):
     print("❌ ERROR: SELLER_API_ACCESS_TOKEN not found!")
-    print("Please set it in GitHub Secrets")
+    print("Please set it in GitHub Secrets or .env file")
     sys.exit(1)
 
 print("="*70)
@@ -61,8 +75,10 @@ print(f"   ALERT_COOLDOWN: {ALERT_COOLDOWN} seconds")
 print(f"   SELLER_API_ACCESS_TOKEN: {'✅ SET' if os.getenv('SELLER_API_ACCESS_TOKEN') else '❌ MISSING'}")
 print(f"   VARIANTS: {os.getenv('VARIANTS', 'NOT SET')[:50]}...")
 print(f"   COUNTS: {os.getenv('COUNTS', 'NOT SET')}")
-print(f"   SMS_API_KEY: {'✅ SET' if os.getenv('SMS_API_KEY') else '❌ MISSING'}")
-print(f"   SMS_RECIPIENT: {os.getenv('SMS_RECIPIENT', 'NOT SET')}")
+print(f"   SMS_PATTERN_CODE: {SMS_PATTERN_CODE}")
+print(f"   SMS_SENDER: {SMS_SENDER}")
+print(f"   SMS_RECIPIENT: {SMS_RECIPIENT}")
+print(f"   SMS_API_KEY: {'✅ SET' if SMS_API_KEY else '❌ MISSING'}")
 print("="*70)
 
 # Cookies from environment
@@ -89,13 +105,6 @@ BASE_PARAMS = {
     "variants": os.getenv('VARIANTS', ''),
     "counts": os.getenv('COUNTS', '')
 }
-
-# SMS Config
-SMS_PATTERN_CODE = "kondvd1hhs5h3ld"
-SMS_SENDER = "3000505"
-SMS_RECIPIENT = os.getenv('SMS_RECIPIENT', '')
-SMS_API_KEY = os.getenv('SMS_API_KEY', '')
-SMS_COOKIE = "TS0177e476=0150a3e24e04874134dfd1bd5c65872f68c46a920efd859609d593ca9d48072507268ec821466d8aa3136e08191fcd1c9bfcc5abdd"
 
 def send_sms_with_capacity_code(capacity_code):
     """Send SMS with capacity code"""
@@ -154,7 +163,6 @@ def check_capacity_now():
     params["date"] = date_param
     
     try:
-        print(f"🔍 Checking capacity for date: {date_param}")
         response = requests.get(url, headers=HEADERS, cookies=COOKIES, params=params, timeout=10)
         
         if response.status_code == 200:
@@ -162,11 +170,9 @@ def check_capacity_now():
             capacities = data.get("data", {}).get("capacities", [])
             
             if not capacities:
-                print("⚠️ No capacity data received")
                 return [], [], [], "0000000", []
             
             capacity_code, hour_ranges = generate_capacity_code(capacities)
-            print(f"📊 Capacity code: {capacity_code}")
             
             available_slots = []
             all_available_hours = []
@@ -179,48 +185,105 @@ def check_capacity_now():
             
             return available_slots, all_available_hours, capacities, capacity_code, hour_ranges
         else:
-            print(f"⚠️ HTTP {response.status_code}: {response.text[:100]}")
+            print(f"⚠️ HTTP {response.status_code}")
             return None, None, None, None, None
             
     except Exception as e:
         print(f"⚠️ Error: {e}")
         return None, None, None, None, None
 
-# ===== MAIN - One time check for GitHub Actions =====
+def print_alert(available_slots, all_available_hours, capacity_code, hour_ranges):
+    """Print alert in English with all available time slots"""
+    print("\n" + "="*70)
+    print("🚨🚨🚨 WAREHOUSE CAPACITY AVAILABLE! 🚨🚨🚨")
+    print(f"⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    print("\n📊 CAPACITY CODE:")
+    code_with_hours = []
+    for hour_range, digit in zip(hour_ranges, capacity_code):
+        status = "✅" if digit == "1" else "❌"
+        code_with_hours.append(f"{hour_range}({digit}){status}")
+    
+    print(f"   {' | '.join(code_with_hours)}")
+    print(f"   Full Code: {capacity_code}")
+    
+    if all_available_hours:
+        print("\n📋 AVAILABLE HOURS:")
+        hours_list = [f"{slot['start']:02d}:00-{slot['end']:02d}:00" for slot in all_available_hours]
+        print(f"   {', '.join(hours_list)}")
+    
+    print("="*70)
+    
+    # Beep sound for Windows
+    try:
+        import winsound
+        winsound.Beep(1000, 1000)
+        winsound.Beep(1500, 500)
+    except:
+        print("\a")
+
+# ===== MAIN LOOP WITH while True =====
 if __name__ == "__main__":
-    print("\n🚀 CHECKING WAREHOUSE CAPACITY...")
+    print("\n" + "="*70)
+    print("🚀 STARTING CONTINUOUS WAREHOUSE CAPACITY MONITOR...")
     print(f"📦 Warehouse ID: {WAREHOUSE_ID}")
-    print("-" * 50)
+    print(f"⏰ Checking every {CHECK_INTERVAL} seconds")
+    print(f"💡 Alert cooldown: {ALERT_COOLDOWN} seconds")
+    print(f"🕐 Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("🖥️ Running on local computer (infinite loop)")
+    print("❌ Press Ctrl+C to stop")
+    print("="*70 + "\n")
     
-    result = check_capacity_now()
+    last_alert_time = 0
+    last_sms_code = None
+    iteration_count = 0
     
-    if result[0] is not None:
-        available_slots, all_available_hours, all_capacities, capacity_code, hour_ranges = result
-        
-        if available_slots and len(available_slots) > 0:
-            print(f"\n✅✅✅ CAPACITY AVAILABLE! ✅✅✅")
-            print(f"📊 Code: {capacity_code}")
+    try:
+        while True:
+            iteration_count += 1
             
-            # Show which hours are available
-            available_hours = []
-            for hour_range, digit in zip(hour_ranges, capacity_code):
-                if digit == "1":
-                    available_hours.append(hour_range)
+            # Simple status update every 10 iterations
+            if iteration_count % 10 == 0:
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] 💓 Still running... (Check #{iteration_count})")
             
-            if available_hours:
-                print(f"🕐 Available hours: {', '.join(available_hours)}")
+            result = check_capacity_now()
             
-            # Send SMS
-            print("\n📱 Sending SMS alert...")
-            send_sms_with_capacity_code(capacity_code)
-        else:
-            print(f"\n❌ No capacity available")
-            print(f"📊 Current code: {capacity_code}")
+            if result[0] is not None:
+                available_slots, all_available_hours, all_capacities, capacity_code, hour_ranges = result
+                
+                # Show current code (every iteration)
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] Code: {capacity_code}")
+                
+                if available_slots and len(available_slots) > 0:
+                    current_time = time.time()
+                    
+                    # Check if code changed
+                    if capacity_code != last_sms_code:
+                        print(f"\n🎉 NEW CAPACITY DETECTED! Code changed to: {capacity_code}")
+                        send_sms_with_capacity_code(capacity_code)
+                        last_sms_code = capacity_code
+                        last_alert_time = current_time
+                        print_alert(available_slots, all_available_hours, capacity_code, hour_ranges)
+                    elif current_time - last_alert_time > ALERT_COOLDOWN:
+                        print_alert(available_slots, all_available_hours, capacity_code, hour_ranges)
+                        last_alert_time = current_time
+                    else:
+                        # Just show available hours
+                        if all_available_hours:
+                            hours_str = ", ".join([f"{slot['start']:02d}:00" for slot in all_available_hours])
+                            print(f"   ✅ Available: {hours_str}")
+                else:
+                    # No capacity - show occasionally to avoid spam
+                    if iteration_count % 6 == 0:
+                        # Show when next slots might be available
+                        if hour_ranges:
+                            print(f"   🕐 Warehouse hours: {', '.join(hour_ranges[:3])}...")
+            else:
+                print(f"⚠️ Failed to fetch data")
             
-            # Show schedule
-            if hour_ranges:
-                print(f"🕐 Warehouse hours: {', '.join(hour_ranges)}")
-    else:
-        print("❌ Failed to fetch capacity data")
-    
-    print("\n✅ Check completed")
+            time.sleep(CHECK_INTERVAL)
+            
+    except KeyboardInterrupt:
+        print("\n\n👋 Monitoring stopped by user.")
+        print(f"📊 Total checks: {iteration_count}")
+        print(f"🕐 End time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
