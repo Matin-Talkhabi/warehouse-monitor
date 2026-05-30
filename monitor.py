@@ -1,22 +1,71 @@
 import requests
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 import pytz
 import http.client
 import json
 import os
 import sys
-from dotenv import load_dotenv
 
-# Load .env file
-load_dotenv()
+# ===== LOAD .env MANUALLY =====
+def load_env_from_file():
+    """Simple .env file loader"""
+    try:
+        with open('.env', 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    if '=' in line:
+                        key, value = line.split('=', 1)
+                        os.environ[key.strip()] = value.strip()
+        print("✅ Loaded .env file successfully")
+        return True
+    except FileNotFoundError:
+        print("⚠️ .env file not found, using GitHub Secrets")
+        return False
+    except Exception as e:
+        print(f"⚠️ Error loading .env: {e}")
+        return False
 
-# ===== CONFIGURATION FROM ENV =====
-WAREHOUSE_ID = int(os.getenv('WAREHOUSE_ID', '71'))
-CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '10'))
-ALERT_COOLDOWN = int(os.getenv('ALERT_COOLDOWN', '10'))
+# Load .env file if exists (for local development)
+load_env_from_file()
 
-# Cookies from .env
+# ===== CONFIGURATION WITH SAFE PARSING =====
+def get_env_int(key, default):
+    """Safely get integer from environment variable"""
+    value = os.getenv(key)
+    if value is None or value == '':
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        print(f"⚠️ Warning: {key} value '{value}' is invalid, using default {default}")
+        return default
+
+# Use safe parsing for all integer values
+WAREHOUSE_ID = get_env_int('WAREHOUSE_ID', 72)
+CHECK_INTERVAL = get_env_int('CHECK_INTERVAL', 30)
+ALERT_COOLDOWN = get_env_int('ALERT_COOLDOWN', 300)
+
+# Check if critical secrets are available
+if not os.getenv('SELLER_API_ACCESS_TOKEN'):
+    print("❌ ERROR: SELLER_API_ACCESS_TOKEN not found!")
+    print("Please set it in GitHub Secrets")
+    sys.exit(1)
+
+print("="*70)
+print("🔧 CONFIGURATION LOADED:")
+print(f"   WAREHOUSE_ID: {WAREHOUSE_ID}")
+print(f"   CHECK_INTERVAL: {CHECK_INTERVAL} seconds")
+print(f"   ALERT_COOLDOWN: {ALERT_COOLDOWN} seconds")
+print(f"   SELLER_API_ACCESS_TOKEN: {'✅ SET' if os.getenv('SELLER_API_ACCESS_TOKEN') else '❌ MISSING'}")
+print(f"   VARIANTS: {os.getenv('VARIANTS', 'NOT SET')[:50]}...")
+print(f"   COUNTS: {os.getenv('COUNTS', 'NOT SET')}")
+print(f"   SMS_API_KEY: {'✅ SET' if os.getenv('SMS_API_KEY') else '❌ MISSING'}")
+print(f"   SMS_RECIPIENT: {os.getenv('SMS_RECIPIENT', 'NOT SET')}")
+print("="*70)
+
+# Cookies from environment
 COOKIES = {
     "seller_api_access_token": os.getenv('SELLER_API_ACCESS_TOKEN', ''),
     "tracker_glob_new": os.getenv('TRACKER_GLOB_NEW', ''),
@@ -50,6 +99,10 @@ SMS_COOKIE = "TS0177e476=0150a3e24e04874134dfd1bd5c65872f68c46a920efd859609d593c
 
 def send_sms_with_capacity_code(capacity_code):
     """Send SMS with capacity code"""
+    if not SMS_API_KEY or not SMS_RECIPIENT:
+        print("⚠️ SMS not configured - skipping")
+        return False
+    
     try:
         conn = http.client.HTTPSConnection("api2.ippanel.com")
         payload = json.dumps({
@@ -93,7 +146,7 @@ def get_current_tehran_time():
 def check_capacity_now():
     now = get_current_tehran_time()
     
-    # فقط از فرمتی استفاده کن که جواب داده (با Z در آخر)
+    # Use the working format
     date_param = now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     
     url = f"https://seller.digikala.com/api/v2/packages/warehouses/{WAREHOUSE_ID}"
@@ -101,6 +154,7 @@ def check_capacity_now():
     params["date"] = date_param
     
     try:
+        print(f"🔍 Checking capacity for date: {date_param}")
         response = requests.get(url, headers=HEADERS, cookies=COOKIES, params=params, timeout=10)
         
         if response.status_code == 200:
@@ -108,9 +162,11 @@ def check_capacity_now():
             capacities = data.get("data", {}).get("capacities", [])
             
             if not capacities:
+                print("⚠️ No capacity data received")
                 return [], [], [], "0000000", []
             
             capacity_code, hour_ranges = generate_capacity_code(capacities)
+            print(f"📊 Capacity code: {capacity_code}")
             
             available_slots = []
             all_available_hours = []
@@ -130,92 +186,41 @@ def check_capacity_now():
         print(f"⚠️ Error: {e}")
         return None, None, None, None, None
 
-def print_alert(available_slots, all_available_hours, capacity_code, hour_ranges):
-    """Print alert in English with all available time slots"""
-    print("\n" + "="*70)
-    print("🚨🚨🚨 WAREHOUSE CAPACITY AVAILABLE! 🚨🚨🚨")
-    print(f"⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    
-    print("\n📊 CAPACITY CODE:")
-    code_with_hours = []
-    for hour_range, digit in zip(hour_ranges, capacity_code):
-        status = "✅" if digit == "1" else "❌"
-        code_with_hours.append(f"{hour_range}({digit}){status}")
-    
-    # فقط ساعات با ظرفیت را نشان بده
-    available_hours_only = [f"{hour_range}({digit})✅" for hour_range, digit in zip(hour_ranges, capacity_code) if digit == "1"]
-    
-    if available_hours_only:
-        print(f"   Available: {' | '.join(available_hours_only)}")
-    else:
-        print(f"   No available hours")
-    
-    print(f"   Full Code: {capacity_code}")
-    
-    if all_available_hours:
-        print("\n📋 AVAILABLE HOURS:")
-        hours_list = [f"{slot['start']:02d}:00-{slot['end']:02d}:00" for slot in all_available_hours]
-        print(f"   {', '.join(hours_list)}")
-    
-    print("="*70)
-
-# ===== MAIN LOOP =====
+# ===== MAIN - One time check for GitHub Actions =====
 if __name__ == "__main__":
-    print("\n🚀 STARTING WAREHOUSE CAPACITY MONITOR...")
+    print("\n🚀 CHECKING WAREHOUSE CAPACITY...")
     print(f"📦 Warehouse ID: {WAREHOUSE_ID}")
-    print(f"⏰ Checking every {CHECK_INTERVAL} seconds")
-    print(f"🕐 Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("💡 Will alert when ANY capacity becomes available")
-    print("❌ Press Ctrl+C to stop")
-    print("="*70)
+    print("-" * 50)
     
-    last_sms_code = None
-    iteration_count = 0
+    result = check_capacity_now()
     
-    try:
-        while True:
-            iteration_count += 1
+    if result[0] is not None:
+        available_slots, all_available_hours, all_capacities, capacity_code, hour_ranges = result
+        
+        if available_slots and len(available_slots) > 0:
+            print(f"\n✅✅✅ CAPACITY AVAILABLE! ✅✅✅")
+            print(f"📊 Code: {capacity_code}")
             
-            # Simple status update
-            print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Checking... (#{iteration_count})")
+            # Show which hours are available
+            available_hours = []
+            for hour_range, digit in zip(hour_ranges, capacity_code):
+                if digit == "1":
+                    available_hours.append(hour_range)
             
-            result = check_capacity_now()
+            if available_hours:
+                print(f"🕐 Available hours: {', '.join(available_hours)}")
             
-            if result[0] is not None:
-                available_slots, all_available_hours, all_capacities, capacity_code, hour_ranges = result
-                
-                # Show current code
-                print(f"   Code: {capacity_code}")
-                
-                if available_slots and len(available_slots) > 0:
-                    # Has capacity
-                    if capacity_code != last_sms_code:
-                        print(f"\n🎉 NEW CAPACITY DETECTED! Code changed to: {capacity_code}")
-                        send_sms_with_capacity_code(capacity_code)
-                        last_sms_code = capacity_code
-                        print_alert(available_slots, all_available_hours, capacity_code, hour_ranges)
-                    else:
-                        print(f"   ✅ Capacity available (already alerted)")
-                        # Still show available hours
-                        if all_available_hours:
-                            hours_str = ", ".join([f"{slot['start']:02d}:00" for slot in all_available_hours])
-                            print(f"   📋 Available: {hours_str}")
-                else:
-                    # No capacity
-                    if any(d == '1' for d in capacity_code):
-                        # This shouldn't happen
-                        pass
-                    else:
-                        if iteration_count % 6 == 0:  # هر 3 دقیقه یکبار (چون هر 30 ثانیه)
-                            print(f"   ❌ No capacity available (code: {capacity_code})")
-                            # Show when next slots might be available
-                            if hour_ranges:
-                                print(f"   🕐 Check hours: {', '.join(hour_ranges)}")
-            else:
-                print(f"   ⚠️ Failed to get data")
+            # Send SMS
+            print("\n📱 Sending SMS alert...")
+            send_sms_with_capacity_code(capacity_code)
+        else:
+            print(f"\n❌ No capacity available")
+            print(f"📊 Current code: {capacity_code}")
             
-            time.sleep(CHECK_INTERVAL)
-            
-    except KeyboardInterrupt:
-        print("\n\n👋 Monitoring stopped.")
-        print(f"📊 Total checks: {iteration_count}")
+            # Show schedule
+            if hour_ranges:
+                print(f"🕐 Warehouse hours: {', '.join(hour_ranges)}")
+    else:
+        print("❌ Failed to fetch capacity data")
+    
+    print("\n✅ Check completed")
