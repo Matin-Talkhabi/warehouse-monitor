@@ -1,5 +1,4 @@
 
-```markdown
 # 📦 Digikala Warehouse Capacity Monitor
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -217,69 +216,3 @@ If this tool helped you, please **star** this repository and share it with other
 **Made with ❤️ for Digikala sellers struggling with warehouse capacity**
 
 *Disclaimer: This is an unofficial tool. Use at your own risk. Always comply with Digikala's terms of service.*
-```
-
-## همچنین یک فایل `.env.example` برای راهنمایی کاربران:
-
-```env
-# Warehouse API Configuration
-WAREHOUSE_ID=72
-DELIVERY_TYPE=seller
-PACKAGE_TYPE=order_fulfilment
-SHIPPING_NATURE_ID=2
-VARIANTS=79722317,79722091,76352746,76307567,76282132,76225984
-COUNTS=2,1,1,1,3,3
-
-# Digikala Cookies (Get from browser Developer Tools)
-SELLER_API_ACCESS_TOKEN=your_jwt_token_here
-TRACKER_GLOB_NEW=your_tracker_value
-TRACKER_SESSION=your_session_value
-TS01DDD49F=your_ts_value
-TS018D011A=your_ts_value
-
-# SMS Configuration (IPPanel)
-SMS_PATTERN_CODE=kondvd1hhs5h3ld
-SMS_SENDER=3000505
-SMS_RECIPIENT=09025967864
-SMS_API_KEY=your_ippanel_api_key
-SMS_COOKIE=your_sms_cookie
-
-# Monitor Settings
-CHECK_INTERVAL=30
-ALERT_COOLDOWN=300
-```
-
-## فایل `LICENSE` (اختیاری):
-
-```txt
-MIT License
-
-Copyright (c) 2026
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-این README کاملاً حرفه‌ای است و:
-- ✅ مشکل اصلی فروشندگان را توضیح می‌دهد
-- ✅ راه‌اندازی گام به گام دارد
-- ✅ عیب‌یابی کامل ارائه می‌دهد
-- ✅ برای دیده شدن در جستجوهای GitHub بهینه شده است
-- ✅ باج (Badge)های وضعیت دارد
-
-آیا نیاز به تغییر یا اضافه کردن بخش دیگری دارید؟
