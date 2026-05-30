@@ -50,9 +50,9 @@ def get_env_str(key, default=''):
     return value
 
 # Use safe parsing for all values
-WAREHOUSE_ID = get_env_int('WAREHOUSE_ID', '')
-CHECK_INTERVAL = get_env_int('CHECK_INTERVAL', '')
-ALERT_COOLDOWN = get_env_int('ALERT_COOLDOWN', '')
+WAREHOUSE_ID = get_env_int('WAREHOUSE_ID', '50')
+CHECK_INTERVAL = get_env_int('CHECK_INTERVAL', '30')
+ALERT_COOLDOWN = get_env_int('ALERT_COOLDOWN', '300')
 
 # SMS Config - ALL from environment
 SMS_PATTERN_CODE = get_env_str('SMS_PATTERN_CODE', '')
