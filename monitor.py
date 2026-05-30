@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ===== CONFIGURATION FROM ENV =====
-WAREHOUSE_ID = int(os.getenv('WAREHOUSE_ID', '50'))
+WAREHOUSE_ID = int(os.getenv('WAREHOUSE_ID', '71'))
 CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '10'))
 ALERT_COOLDOWN = int(os.getenv('ALERT_COOLDOWN', '10'))
 
