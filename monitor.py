@@ -158,7 +158,7 @@ def check_capacity_now():
     # Use the working format
     date_param = now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     
-    url = f"https://seller.digikala.com/api/v2/packages/warehouses/{WAREHOUSE_ID}"
+    url = f"https://seller.digikala.com/api/v2/packages/warehouses/72?delivery_type=seller&date=2026-05-31T21%3A30%3A00.000Z&package_type=order_fulfilment&shipping_nature_id=2&variants=77054087%2C76261961%2C76225984&counts=1%2C1%2C1"
     params = BASE_PARAMS.copy()
     params["date"] = date_param
     
