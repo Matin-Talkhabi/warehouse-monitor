@@ -1,0 +1,94 @@
+Request URL
+https://seller.digikala.com/api/v2/packages/warehouses/72?delivery_type=seller&date=2026-07-12T21%3A30%3A00.000Z&package_type=order_fulfilment&shipping_nature_id=2&variants=81008936%2C76282132&counts=1%2C1
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+185.188.104.11:443
+Referrer Policy
+strict-origin-when-cross-origin
+access-control-allow-credentials
+true
+access-control-allow-credentials
+true
+access-control-allow-headers
+authorization,content-type,
+access-control-allow-headers
+Authorization,x-web-city-id,x-web-client-id,x-web-client,x-web-global-user-id,x-web-optimize-response,x-web-session-id,content-type,supernova-profiler,supernova-flush-container,supernova-flush-cache,supernova-flush-opcache,supernova-vendor-dir,supernova-show-500-err
+access-control-allow-methods
+GET,OPTIONS
+access-control-allow-methods
+GET, POST, PUT, DELETE, OPTIONS
+access-control-allow-origin
+https://www.digikala.com
+alt-svc
+h3=":443"; ma=86400
+cache-control
+no-cache
+content-encoding
+gzip
+content-type
+application/json
+date
+Sun, 12 Jul 2026 06:13:55 GMT
+expires
+Sun, 12 Jul 2026 06:13:54 GMT
+server
+DigiCDN Edge
+server-timing
+total;dur=0.130
+set-cookie
+tracker_glob_new=aF3EwNC; expires=Mon, 16-Jun-2031 06:13:55 GMT; Max-Age=155520000; path=/; secure; httponly; samesite=none
+set-cookie
+tracker_session=gcKNhf5; expires=Sun, 12-Jul-2026 06:43:55 GMT; Max-Age=1800; path=/; secure; httponly; samesite=none
+set-cookie
+TS01ddd49f=010231059169422051cf0e73cb74f8b8be77408c83b921f7b84f03164d4bf8a67818088e53e1cc8c2f0663db70d1c632e067e437dedc7614b9e64161b10d973796866a4ca287b2e13ae3ff5048a8d93f86169e98c0; Path=/; Domain=.seller-api.digikala.com;
+vary
+Accept-Encoding
+vary
+Accept-Encoding
+x-clockwork-path
+/api/v2/__clockwork/
+x-dk-request-id
+807eed89ca635b6104b5a8df00cbfeae
+x-dk-server-id
+ir-pap-e01
+x-edge-server
+SN-K8s/SN-K8s-184
+:authority
+seller.digikala.com
+:method
+GET
+:path
+/api/v2/packages/warehouses/72?delivery_type=seller&date=2026-07-12T21%3A30%3A00.000Z&package_type=order_fulfilment&shipping_nature_id=2&variants=81008936%2C76282132&counts=1%2C1
+:scheme
+https
+accept
+application/json, text/plain, */*
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-US,en;q=0.9,fa;q=0.8,en-GB;q=0.7,haw;q=0.6
+cookie
+tracker_glob_new=aF3EwNC; _dwid=019eb854-9a8d-7a2a-9ef1-88141e3eda0e; _sentinel_dwid=019eb854-9b15-71da-8b48-8007d1c66908; _ym_uid=1762686858229436530; _ym_d=1781209015; tracker_glob_new=5sragKa; _sp_id.3a05=1de713fb-ba98-471f-b148-40b83bbf3c7c.1781381611.1.1781381615..81792857-65ce-4cdc-b00e-f822dd615db3..e81f4edd-bb16-4362-833e-16f789716f39.1781381610568.2; _hp5_event_props.2724891150=%7B%7D; _hp5_meta.2724891150=%7B%22userId%22%3A%227827430514109633%22%2C%22sessionId%22%3A%225962837458719298%22%2C%22sessionProperties%22%3A%7B%22time%22%3A1781645285212%2C%22id%22%3A%225962837458719298%22%2C%22initial_pageview_info%22%3A%7B%22time%22%3A1781645285212%2C%22id%22%3A%223616505101258400%22%2C%22title%22%3A%22%D8%B7%D9%84%D8%A7%DB%8C%20%D9%85%D9%86%20%7C%20%D8%B7%D9%84%D8%A7%DB%8C%20%D8%AF%DB%8C%D8%AC%DB%8C%D8%AA%D8%A7%D9%84%20%D8%AF%DB%8C%D8%AC%DB%8C%E2%80%8C%DA%A9%D8%A7%D9%84%D8%A7%22%2C%22previous_page%22%3A%22%2Fdigiclub%2Fhistory%2Fpending%2F%22%2C%22url%22%3A%7B%22domain%22%3A%22www.digikala.com%22%2C%22path%22%3A%22%2Fwealth%2Fmy-assets%2F%22%2C%22query%22%3A%22%3Futm_source%3Ddk%26utm_medium%3Dundersearchbutton%26utm_campaign%3Dfixbutton%22%2C%22hash%22%3A%22%22%7D%7D%2C%22search_keyword%22%3A%22%22%2C%22referrer%22%3A%22https%3A%2F%2Fwww.digikala.com%2Fdigiclub%2Fhistory%2Fpending%2F%22%2C%22utm%22%3A%7B%22source%22%3A%22dk%22%2C%22medium%22%3A%22undersearchbutton%22%2C%22term%22%3A%22%22%2C%22content%22%3A%22%22%2C%22campaign%22%3A%22fixbutton%22%7D%7D%7D; _hp5_let.2724891150=1781645320091; _ga_337056556=GS2.1.s1782983508$o7$g1$t1782983537$j31$l0$h0; ab_test_experiments=%5B%22229ea1a233356b114984cf9fa2ecd3ff%22%2C%22db7b11075496e04f0a6ef0d3a02d5264%22%2C%224905b18f64695e6dbfd739d20a4ae2c0%22%2C%22f0fd80107233fa604679779d7e121710%22%2C%2237136fdc21e0b782211ccac8c2d7be63%22%5D; _hp2_id.11909122=%7B%22userId%22%3A%227341852737356688%22%2C%22pageviewId%22%3A%228115325282809056%22%2C%22sessionId%22%3A%227837852136126573%22%2C%22identity%22%3A%2245211609427%22%2C%22trackerVersion%22%3A%224.0%22%2C%22identityField%22%3Anull%2C%22isIdentified%22%3A1%7D; _gid=GA1.2.1664341265.1783764853; _ga=GA1.1.504277424.1781260945; _ga_BT8W14LC3P=GS2.1.s1783764853$o8$g1$t1783765203$j60$l0$h0; _ga_QQKVTD5TG8=GS2.1.s1783800057$o84$g1$t1783800416$j60$l0$h0; seller_api_access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJ0b2tlbl9pZCI6MzQ1OTk3MjgsInNlbGxlcl9pZCI6MTg0MzA2NCwicGF5bG9hZCI6eyJyZWdpc3Rlcl9waG9uZSI6Ijk4OTAyNTk2Nzg2NCIsInZlcmlmaWVkX2J5X290cCI6WyI5ODkwMjU5Njc4NjQiXSwibGFzdF9uYW1lIjoiXHUwNjJhXHUwNjQ0XHUwNjJlXHUwNjI3XHUwNjI4XHUwNmNjIiwiZmlyc3RfbmFtZSI6Ilx1MDY0NVx1MDYyYVx1MDZjY1x1MDY0NiIsImVtYWlsIjoibWF0aW50YWxraGFiaUBpcmFuLmlyIiwidXNlcm5hbWUiOiI5ODkwMjU5Njc4NjQiLCJtaW50ZWRfYnkiOiJrZXljbG9hayJ9LCJleHAiOjE3ODYzOTQ5NjV9.orSVk_Gge4LfWF8bnRVH1Ew_NMlpaEtwpAj7wJoh3RBCitMy9c9L0V-H_KGjVX5N; PHPSESSID=1j1ts264dffu6bnp5nk9ti5n6j; seller_kc_access_token=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhWGxMUFBVT1hiWWFwT2FNc3RZaGZkd25OcVcwOVhMbUZieDdNMUdUWlJnIn0.eyJleHAiOjE3ODM4NDAyNjYsImlhdCI6MTc4MzgzNjY2NiwianRpIjoib25ydHJ0OjhhZjc4ZmJhLTc4MjQtYmM4Mi1kOGEwLWJkYzZjZGNlNmQ1NyIsImlzcyI6Imh0dHBzOi8vYXV0aC5kaWdpa2FsYS5jb20vcmVhbG1zL2RrLXNlbGxlciIsInR5cCI6IkJlYXJlciIsImF6cCI6InNlbGxlci1wYW5lbCIsInNpZCI6IjBmZTZmNDQ0LWZiYTMtNDRlZS04NTM3LWE2YjQyYjYyMTc5OCIsInNjb3BlIjoib3BlbmlkIiwibG9naW5fc3RhdHVzIjoicGFzc3dvcmQiLCJ2ZXJpZmllZF9ieV9vdHAiOiI5ODkwMjU5Njc4NjQiLCJwYXlsb2FkIjp7InJlZ2lzdGVyX3Bob25lIjoiOTg5MDI1OTY3ODY0IiwidmVyaWZpZWRfYnlfb3RwIjpbIjk4OTAyNTk2Nzg2NCJdLCJsYXN0X25hbWUiOiLYqtmE2K7Yp9io24wiLCJmaXJzdF9uYW1lIjoi2YXYqtuM2YYiLCJlbWFpbCI6Im1hdGludGFsa2hhYmlAaXJhbi5pciIsInVzZXJuYW1lIjoiOTg5MDI1OTY3ODY0In0sInNjZW5hcmlvIjoiMSIsInNlbGxlcl9pZCI6MTg0MzA2NH0.s58daZOrYekDCAQh_kOg2-Te0XZIjhKOkEFAc39fnrH_wd7J5Lb9cKA3Cz1VQzZEF3Qc4d_uNfHQqDMQ6GtmeZG6NVUWSwOFXNCeq_QSXvsq5LxppdZFK3fwz3uwzasuyA18xBxniBb31d8wx_e6FyyDZ0icUEyrObv-OBlTjyd2brdNmB-Mid8SAbCBmQJYRKdDvYdvNXsb_7f4Lpy3CX53ZS8jU3Ns2WF2Noe5jBfTy-DGgtj1FOyxnCecKZfPlTBEDHA6YjpEkeYZJ82Wh0hu7gvKnC4Yrzlw52nhe8uN8rR7qr49FV5lp72UvHZ0ACgbv8sQWh_cmi4dP5FD4w; tracker_session=gcKNhf5; _sp_ses.13cb=*; _clck=1g0fia8%5E2%5Eg7o%5E0%5E2353; _ym_isad=2; _sp_id.13cb=ff939b72-3fdb-4195-8f63-135c707018a4.1781208996.88.1783836743.1783805570.0306201b-7cef-420a-9113-333946d5e1d3.d54b1471-7332-44a0-80a1-3f9dde2dc4bd.ed7acf4d-28b1-4e2a-92ae-eb767bccfaf9.1783836667940.15; _clsk=1dyhjnm%5E1783836744126%5E12%5E0%5Et.clarity.ms%2Fcollect
+dnt
+1
+priority
+u=1, i
+referer
+https://seller.digikala.com/pwa/package/package-creation-revamp
+sec-ch-ua
+"Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+empty
+sec-fetch-mode
+cors
+sec-fetch-site
+same-origin
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36

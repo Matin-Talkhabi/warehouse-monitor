@@ -6,6 +6,7 @@ import http.client
 import json
 import os
 import sys
+from datetime import datetime, timedelta
 
 # ===== LOAD .env MANUALLY =====
 def load_env_from_file():
@@ -153,14 +154,16 @@ def get_current_tehran_time():
     return now_tehran.replace(microsecond=0)
 
 def check_capacity_now():
-    now = get_current_tehran_time()
-    
+    tomorrow = datetime.now() + timedelta(days=1)
+    now = datetime.now()
     # Use the working format
-    date_param = now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    date_param = tomorrow.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     
-    url = f"https://seller.digikala.com/api/v2/packages/warehouses/72?delivery_type=seller&date=2026-05-31T21%3A30%3A00.000Z&package_type=order_fulfilment&shipping_nature_id=2&variants=77054087%2C76261961%2C76225984&counts=1%2C1%2C1"
+    url = f"https://seller.digikala.com/api/v2/packages/warehouses/{WAREHOUSE_ID}"
     params = BASE_PARAMS.copy()
     params["date"] = date_param
+    print(params)
+    print(params["date"])
     
     try:
         response = requests.get(url, headers=HEADERS, cookies=COOKIES, params=params, timeout=10)
